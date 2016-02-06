@@ -11,6 +11,228 @@
     <script type="text/javascript">
 
 var map;
+
+function ProfessorDrivingControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Driving';
+  controlUI.appendChild(controlText);
+
+}
+
+function ProfessorWalkingControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Walking';
+  controlUI.appendChild(controlText);
+
+}
+
+
+function ProfessorCyclingControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Cycling';
+  controlUI.appendChild(controlText);
+
+}
+
+function ProfessorTransitControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Transit';
+  controlUI.appendChild(controlText);
+
+}
+
+//
+
+function MeDrivingControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Driving';
+  controlUI.appendChild(controlText);
+
+}
+
+function MeWalkingControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Walking';
+  controlUI.appendChild(controlText);
+
+}
+
+
+function MeCyclingControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Cycling';
+  controlUI.appendChild(controlText);
+
+}
+
+function MeTransitControl(controlDiv, map) {
+
+  // Set CSS for the control border.
+  var controlUI = document.createElement('div');
+  controlUI.style.backgroundColor = '#fff';
+  controlUI.style.border = '2px solid #fff';
+  controlUI.style.borderRadius = '3px';
+  controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+  controlUI.style.cursor = 'pointer';
+  controlUI.style.marginBottom = '22px';
+  controlUI.style.textAlign = 'center';
+  controlUI.title = 'Click to recenter the map';
+  controlDiv.appendChild(controlUI);
+
+  // Set CSS for the control interior.
+  var controlText = document.createElement('div');
+  controlText.style.color = 'rgb(25,25,25)';
+  controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+  controlText.style.fontSize = '16px';
+  controlText.style.lineHeight = '38px';
+  controlText.style.paddingLeft = '5px';
+  controlText.style.paddingRight = '5px';
+  controlText.innerHTML = 'Transit';
+  controlUI.appendChild(controlText);
+
+}
+
+
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 40.4447831, lng: -79.94996},
@@ -31,8 +253,60 @@ function initMap() {
   var professorMarker = new google.maps.Marker({
       position: {lat: 40.446123, lng: -79.954576},
       map: map,
+	  draggable:true,
       icon: 'professor.png'
   });
+  
+  var professorDrivingControlDiv = document.createElement('div');
+  var professorDrivingControl = new ProfessorDrivingControl(professorDrivingControlDiv, map);
+
+  professorDrivingControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorDrivingControlDiv);
+  
+  var professorWalkingControlDiv = document.createElement('div');
+  var professorWalkingControl = new ProfessorWalkingControl(professorWalkingControlDiv, map);
+
+  professorWalkingControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorWalkingControlDiv);
+  
+  var professorCyclingControlDiv = document.createElement('div');
+  var professorCyclingControl = new ProfessorCyclingControl(professorCyclingControlDiv, map);
+
+  professorCyclingControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorCyclingControlDiv);
+  
+  var professorTransitControlDiv = document.createElement('div');
+  var professorTransitControl = new ProfessorTransitControl(professorTransitControlDiv, map);
+
+  professorTransitControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorTransitControlDiv);
+  
+  //me
+  
+  var meDrivingControlDiv = document.createElement('div');
+  var meDrivingControl = new MeDrivingControl(meDrivingControlDiv, map);
+
+  meDrivingControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meDrivingControlDiv);
+  
+  var meWalkingControlDiv = document.createElement('div');
+  var meWalkingControl = new MeWalkingControl(meWalkingControlDiv, map);
+
+  meWalkingControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meWalkingControlDiv);
+  
+  var meCyclingControlDiv = document.createElement('div');
+  var meCyclingControl = new MeCyclingControl(meCyclingControlDiv, map);
+
+  meCyclingControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meCyclingControlDiv);
+  
+  var meTransitControlDiv = document.createElement('div');
+  var meTransitControl = new MeTransitControl(meTransitControlDiv, map);
+
+  meTransitControlDiv.index = 1;
+  map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meTransitControlDiv);
+  
 }
 
     </script>
