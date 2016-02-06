@@ -13,8 +13,25 @@
 var map;
 function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 40.442497, lng: -79.942558},
-    zoom: 16
+    center: {lat: 40.4447831, lng: -79.94996},
+    zoom: 17
+  });
+  
+  var meetingMarker = new google.maps.Marker({
+      position: {lat: 40.443709, lng: -79.944451},
+      map: map,
+      icon: 'meeting.png'
+  });
+  
+  var cafeMarker = new google.maps.Marker({
+      position: {lat: 40.443919, lng: -79.948974},
+      map: map,
+      icon: 'cafe.png'
+  });
+  var professorMarker = new google.maps.Marker({
+      position: {lat: 40.446123, lng: -79.954576},
+      map: map,
+      icon: 'professor.png'
   });
 }
 
