@@ -274,7 +274,10 @@ function initMap() {
 	  draggable:true,
       icon: 'professor.png'
   });
-   
+  var professorInfowindow = new google.maps.InfoWindow({
+      content: ""
+  });
+	
   professorMarker.addListener('dragend',function(event) {
 	  
       var newProfessorLocation = {lat: event.latLng.lat(), lng:event.latLng.lng()};
@@ -292,7 +295,9 @@ function initMap() {
 	        alert('Error was: ' + status);
 	      } else {
 	          var result = response.rows[0].elements;
-			  alert(result[0].duration.text);    
+			  var contentString = result[0].duration.text;
+			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.open(map, professorMarker);
 	      }
 	    });
   });
