@@ -232,31 +232,73 @@ function MeTransitControl(controlDiv, map) {
 
 }
 
+var centerLocation = {lat: 40.4447831, lng: -79.94996};
+var meetingLocation = {lat: 40.443709, lng: -79.944451};
+var cafeLocation = {lat: 40.443919, lng: -79.948974};
+var professorLocation = {lat: 40.446123, lng: -79.954576};
 
 function initMap() {
-  map = new google.maps.Map(document.getElementById('map'), {
-    center: {lat: 40.4447831, lng: -79.94996},
-    zoom: 17
-  });
+	
+  var myOptions = {
+    	center: centerLocation,
+    	zoom: 17,
+	    mapTypeControlOptions: {
+	      mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.HYBRID]
+	    }, // here´s the array of controls
+	    disableDefaultUI: true, // a way to quickly hide all controls
+	    mapTypeControl: false,
+	    scaleControl: true,
+	    zoomControl: true,
+	    zoomControlOptions: {
+	      style: google.maps.ZoomControlStyle.LARGE 
+	    },
+	    mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+  map = new google.maps.Map(document.getElementById("map"), myOptions); 
+
   
   var meetingMarker = new google.maps.Marker({
-      position: {lat: 40.443709, lng: -79.944451},
+      position: meetingLocation,
       map: map,
       icon: 'meeting.png'
   });
   
   var cafeMarker = new google.maps.Marker({
-      position: {lat: 40.443919, lng: -79.948974},
+      position: cafeLocation,
       map: map,
       icon: 'cafe.png'
   });
   var professorMarker = new google.maps.Marker({
-      position: {lat: 40.446123, lng: -79.954576},
+      position: professorLocation,
       map: map,
 	  draggable:true,
       icon: 'professor.png'
   });
+   
+  professorMarker.addListener('dragend',function(event) {
+	  
+      var newProfessorLocation = {lat: event.latLng.lat(), lng:event.latLng.lng()};
+	  
+	  var service = new google.maps.DistanceMatrixService;
+	    service.getDistanceMatrix({
+	      origins: [newProfessorLocation],
+	      destinations: [meetingLocation],
+	      travelMode: google.maps.TravelMode.DRIVING,
+	      unitSystem: google.maps.UnitSystem.METRIC,
+	      avoidHighways: false,
+	      avoidTolls: false
+	    }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	          var result = response.rows[0].elements;
+			  alert(result[0].duration.text);    
+	      }
+	    });
+  });
   
+	
+	
   var professorDrivingControlDiv = document.createElement('div');
   var professorDrivingControl = new ProfessorDrivingControl(professorDrivingControlDiv, map);
 
