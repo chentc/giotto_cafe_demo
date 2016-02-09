@@ -6,16 +6,29 @@
       #map { height: 100%; }
     </style>
   </head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
   <body>
     <div id="map"></div>
     <script type="text/javascript">
 
 var map;
+var centerLocation = {lat: 40.4447831, lng: -79.94996};
+var meetingLocation = {lat: 40.443709, lng: -79.944451};
+var cafeLocation = {lat: 40.443919, lng: -79.948974};
+var professorLocation = {lat: 40.446123, lng: -79.954576};
+var newProfessorLocation;
+var professorInfowindow;
+var professorMarker;
+var professorDrivingControl;
+var professorWalkingControl;
+var professorCyclingControl;
+var professorTransitControl;
 
 function ProfessorDrivingControl(controlDiv, map) {
 
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
+  controlUI.id = "professorDriving";
   controlUI.style.backgroundColor = '#fff';
   controlUI.style.border = '2px solid #fff';
   controlUI.style.borderRadius = '3px';
@@ -36,6 +49,36 @@ function ProfessorDrivingControl(controlDiv, map) {
   controlText.style.paddingRight = '5px';
   controlText.innerHTML = 'Driving';
   controlUI.appendChild(controlText);
+  
+  controlUI.addEventListener('click', function() {
+	  var event = new CustomEvent("clicked", { "detail": "driving" });
+	  document.dispatchEvent(event);
+	  
+	  
+	  controlUI.style.backgroundColor = 'yellow';
+	  travelMode = google.maps.TravelMode.DRIVING;
+	  var service = new google.maps.DistanceMatrixService;
+	    service.getDistanceMatrix({
+	      origins: [newProfessorLocation],
+	      destinations: [meetingLocation],
+	      travelMode: travelMode,
+	      unitSystem: google.maps.UnitSystem.METRIC,
+	      avoidHighways: false,
+	      avoidTolls: false
+	    }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+			  
+	          var result = response.rows[0].elements;
+			  var contentString = result[0].duration.text;
+			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.open(map, professorMarker);
+	      }
+	    });
+		
+	  professorInfowindow.open(map, professorMarker);
+  });
 
 }
 
@@ -43,6 +86,7 @@ function ProfessorWalkingControl(controlDiv, map) {
 
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
+  controlUI.id = "professorWalking";
   controlUI.style.backgroundColor = '#fff';
   controlUI.style.border = '2px solid #fff';
   controlUI.style.borderRadius = '3px';
@@ -64,6 +108,42 @@ function ProfessorWalkingControl(controlDiv, map) {
   controlText.innerHTML = 'Walking';
   controlUI.appendChild(controlText);
 
+  // var professorTransitButton = document.getElementById("professorTransit");
+  //
+  // if (professorTransitButton == null){
+  // 	  alert("null!");
+  // }
+    //
+  // professorTransitButton.style.backgroundColor = 'white';
+  controlUI.addEventListener('click', function() {
+	  
+	  var event = new CustomEvent("clicked", { "detail": "walking" });
+	  document.dispatchEvent(event);
+	  
+	  
+	  controlUI.style.backgroundColor = 'yellow';
+	  travelMode=google.maps.TravelMode.WALKING;
+	  var service = new google.maps.DistanceMatrixService;
+	    service.getDistanceMatrix({
+	      origins: [newProfessorLocation],
+	      destinations: [meetingLocation],
+	      travelMode: travelMode,
+	      unitSystem: google.maps.UnitSystem.METRIC,
+	      avoidHighways: false,
+	      avoidTolls: false
+	    }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	          var result = response.rows[0].elements;
+			  var contentString = result[0].duration.text;
+			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.open(map, professorMarker);
+	      }
+	    });
+		
+	  professorInfowindow.open(map, professorMarker);
+  });
 }
 
 
@@ -71,6 +151,7 @@ function ProfessorCyclingControl(controlDiv, map) {
 
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
+  controlUI.id = "professorCycling";
   controlUI.style.backgroundColor = '#fff';
   controlUI.style.border = '2px solid #fff';
   controlUI.style.borderRadius = '3px';
@@ -92,13 +173,42 @@ function ProfessorCyclingControl(controlDiv, map) {
   controlText.innerHTML = 'Cycling';
   controlUI.appendChild(controlText);
 
+  controlUI.addEventListener('click', function() {
+	  var event = new CustomEvent("clicked", { "detail": "cycling" });
+	  document.dispatchEvent(event);
+	  
+	  controlUI.style.backgroundColor = 'yellow';
+	  professorTransitControl.controlUI.style.backgroundColor = 'white';
+	  travelMode=google.maps.TravelMode.BICYCLING;
+	  var service = new google.maps.DistanceMatrixService;
+	    service.getDistanceMatrix({
+	      origins: [newProfessorLocation],
+	      destinations: [meetingLocation],
+	      travelMode: travelMode,
+	      unitSystem: google.maps.UnitSystem.METRIC,
+	      avoidHighways: false,
+	      avoidTolls: false
+	    }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	          var result = response.rows[0].elements;
+			  var contentString = result[0].duration.text;
+			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.open(map, professorMarker);
+	      }
+	    });
+		
+	  professorInfowindow.open(map, professorMarker);
+  });
 }
 
 function ProfessorTransitControl(controlDiv, map) {
 
   // Set CSS for the control border.
   var controlUI = document.createElement('div');
-  controlUI.style.backgroundColor = '#fff';
+  controlUI.id = 'professorTransit';
+  controlUI.style.backgroundColor = 'white';
   controlUI.style.border = '2px solid #fff';
   controlUI.style.borderRadius = '3px';
   controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
@@ -119,6 +229,33 @@ function ProfessorTransitControl(controlDiv, map) {
   controlText.innerHTML = 'Transit';
   controlUI.appendChild(controlText);
 
+  controlUI.addEventListener('click', function() {
+	  var event = new CustomEvent("clicked", { "detail": "transit" });
+	  document.dispatchEvent(event);
+	  
+	  controlUI.style.backgroundColor = 'yellow';
+	  travelMode = google.maps.TravelMode.TRANSIT;
+	  var service = new google.maps.DistanceMatrixService;
+	    service.getDistanceMatrix({
+	      origins: [newProfessorLocation],
+	      destinations: [meetingLocation],
+	      travelMode: travelMode,
+	      unitSystem: google.maps.UnitSystem.METRIC,
+	      avoidHighways: false,
+	      avoidTolls: false
+	    }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	          var result = response.rows[0].elements;
+			  var contentString = result[0].duration.text;
+			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.open(map, professorMarker);
+	      }
+	    });
+		
+	  professorInfowindow.open(map, professorMarker);
+  });
 }
 
 //
@@ -147,6 +284,7 @@ function MeDrivingControl(controlDiv, map) {
   controlText.style.paddingRight = '5px';
   controlText.innerHTML = 'Driving';
   controlUI.appendChild(controlText);
+
 
 }
 
@@ -232,10 +370,7 @@ function MeTransitControl(controlDiv, map) {
 
 }
 
-var centerLocation = {lat: 40.4447831, lng: -79.94996};
-var meetingLocation = {lat: 40.443709, lng: -79.944451};
-var cafeLocation = {lat: 40.443919, lng: -79.948974};
-var professorLocation = {lat: 40.446123, lng: -79.954576};
+
 
 function initMap() {
 	
@@ -255,7 +390,10 @@ function initMap() {
 	    mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
   map = new google.maps.Map(document.getElementById("map"), myOptions); 
-
+  
+  professorInfowindow = new google.maps.InfoWindow({
+      content: ""
+  });
   
   var meetingMarker = new google.maps.Marker({
       position: meetingLocation,
@@ -268,25 +406,22 @@ function initMap() {
       map: map,
       icon: 'cafe.png'
   });
-  var professorMarker = new google.maps.Marker({
+  professorMarker = new google.maps.Marker({
       position: professorLocation,
       map: map,
 	  draggable:true,
       icon: 'professor.png'
   });
-  var professorInfowindow = new google.maps.InfoWindow({
-      content: ""
-  });
-	
+ 
   professorMarker.addListener('dragend',function(event) {
 	  
-      var newProfessorLocation = {lat: event.latLng.lat(), lng:event.latLng.lng()};
+      newProfessorLocation = {lat: event.latLng.lat(), lng:event.latLng.lng()};
 	  
 	  var service = new google.maps.DistanceMatrixService;
 	    service.getDistanceMatrix({
 	      origins: [newProfessorLocation],
 	      destinations: [meetingLocation],
-	      travelMode: google.maps.TravelMode.DRIVING,
+	      travelMode: google.maps.TravelMode.WALKING,
 	      unitSystem: google.maps.UnitSystem.METRIC,
 	      avoidHighways: false,
 	      avoidTolls: false
@@ -305,30 +440,58 @@ function initMap() {
 	
 	
   var professorDrivingControlDiv = document.createElement('div');
-  var professorDrivingControl = new ProfessorDrivingControl(professorDrivingControlDiv, map);
+  professorDrivingControl = new ProfessorDrivingControl(professorDrivingControlDiv, map);
 
   professorDrivingControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorDrivingControlDiv);
   
   var professorWalkingControlDiv = document.createElement('div');
-  var professorWalkingControl = new ProfessorWalkingControl(professorWalkingControlDiv, map);
-
-  professorWalkingControlDiv.index = 1;
+  professorWalkingControl = new ProfessorWalkingControl(professorWalkingControlDiv, map);
+  
+  professorWalkingControlDiv.index = 2;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorWalkingControlDiv);
   
   var professorCyclingControlDiv = document.createElement('div');
-  var professorCyclingControl = new ProfessorCyclingControl(professorCyclingControlDiv, map);
+  professorCyclingControl = new ProfessorCyclingControl(professorCyclingControlDiv, map);
 
-  professorCyclingControlDiv.index = 1;
+  professorCyclingControlDiv.index = 3;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorCyclingControlDiv);
   
   var professorTransitControlDiv = document.createElement('div');
-  var professorTransitControl = new ProfessorTransitControl(professorTransitControlDiv, map);
+  professorTransitControl = new ProfessorTransitControl(professorTransitControlDiv, map);
 
-  professorTransitControlDiv.index = 1;
+  professorTransitControlDiv.index = 4;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorTransitControlDiv);
   
-  //me
+
+  
+
+ 
+
+  document.addEventListener("clicked", function(e) {
+	  if (e.detail == "transit"){
+	  	professorCyclingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+		professorDrivingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+		professorWalkingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+	  }
+	  if (e.detail == "driving"){
+	  	professorTransitControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+	  	professorCyclingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+		professorWalkingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+	  }
+	  if (e.detail == "cycling"){
+  	  	professorTransitControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+  	  	professorDrivingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+  		professorWalkingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+	  }
+	  if (e.detail == "walking"){
+	  	professorTransitControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+	  	professorCyclingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+		professorDrivingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
+	  }
+  });
+  
+    //me
   
   var meDrivingControlDiv = document.createElement('div');
   var meDrivingControl = new MeDrivingControl(meDrivingControlDiv, map);
