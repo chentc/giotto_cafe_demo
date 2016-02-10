@@ -5,11 +5,25 @@
       html, body { height: 100%; margin: 0; padding: 0; }
       #map { height: 100%; }
     </style>
-  </head>
+ 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script type="text/javascript">
+
+  </script>
+    <script src="https://apis.google.com/js/client.js?onload=checkAuth">
+    </script>
+	 </head>
   <body>
-    <div id="map"></div>
-    <script type="text/javascript">
+      <div id="authorize-div" >
+        <span>Authorize access to Google Calendar API</span>
+        <!--Button for the user to click to initiate auth sequence -->
+        <button id="authorize-button" onclick="handleAuthClick(event)">
+          Authorize
+        </button>
+      </div>
+	 
+<div id="map"></div>
+<script type="text/javascript">
 
 var map;
 var centerLocation = {lat: 40.4447831, lng: -79.94996};
@@ -18,11 +32,78 @@ var cafeLocation = {lat: 40.443919, lng: -79.948974};
 var professorLocation = {lat: 40.446123, lng: -79.954576};
 var newProfessorLocation;
 var professorInfowindow;
+var meetingInfowindow;
+var cafeInfowindow;
 var professorMarker;
 var professorDrivingControl;
 var professorWalkingControl;
 var professorCyclingControl;
 var professorTransitControl;
+var whenMeeting;
+
+
+var CLIENT_ID = '719954238122-em9a9f63bh0hs3nt10j4agr0p1jmvuqh.apps.googleusercontent.com';
+
+var SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"];
+
+
+function checkAuth() {
+  gapi.auth.authorize(
+    {
+      'client_id': CLIENT_ID,
+      'scope': SCOPES.join(' '),
+      'immediate': true
+    }, handleAuthResult);
+}
+
+function handleAuthResult(authResult) {
+  var authorizeDiv = document.getElementById('authorize-div');
+  if (authResult && !authResult.error) {
+    // Hide auth UI, then load client library.
+    authorizeDiv.style.display = 'none';
+	loadCalendarApi();
+    
+  } else {
+    authorizeDiv.style.display = 'inline';
+  }
+}
+
+function handleAuthClick(event) {
+  gapi.auth.authorize(
+    {client_id: CLIENT_ID, scope: SCOPES, immediate: false},
+    handleAuthResult);
+  return false;
+}
+
+function loadCalendarApi() {
+  gapi.client.load('calendar', 'v3',whenMeetingStarts);
+}
+
+function whenMeetingStarts() {
+    var request = gapi.client.calendar.events.list({
+      'calendarId': 'primary',
+      'timeMin': (new Date()).toISOString(),
+      'showDeleted': false,
+      'singleEvents': true,
+      'maxResults': 10,
+      'orderBy': 'startTime'
+    });
+
+    request.execute(function(resp) {
+      var events = resp.items;
+  
+      if (events.length > 0) {
+  	  var when = events[0].start.dateTime;
+
+  	  var currentDate = new Date();
+  	  var currentTime = currentDate.getTime();
+	  
+  	  var diffInMinutes = Date.parse(when)-currentTime;
+  	  whenMeeting = Math.round(diffInMinutes/60000); 
+      }
+
+    });
+}
 
 function ProfessorDrivingControl(controlDiv, map) {
 
@@ -49,12 +130,12 @@ function ProfessorDrivingControl(controlDiv, map) {
   controlText.style.paddingRight = '5px';
   controlText.innerHTML = 'Driving';
   controlUI.appendChild(controlText);
-  
+
   controlUI.addEventListener('click', function() {
 	  var event = new CustomEvent("clicked", { "detail": "driving" });
 	  document.dispatchEvent(event);
-	  
-	  
+
+
 	  controlUI.style.backgroundColor = 'yellow';
 	  travelMode = google.maps.TravelMode.DRIVING;
 	  var service = new google.maps.DistanceMatrixService;
@@ -69,14 +150,14 @@ function ProfessorDrivingControl(controlDiv, map) {
 	      if (status !== google.maps.DistanceMatrixStatus.OK) {
 	        alert('Error was: ' + status);
 	      } else {
-			  
+
 	          var result = response.rows[0].elements;
 			  var contentString = result[0].duration.text;
-			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.setContent(contentString+" to the meeting");
 			  professorInfowindow.open(map, professorMarker);
 	      }
 	    });
-		
+
 	  professorInfowindow.open(map, professorMarker);
   });
 
@@ -108,19 +189,13 @@ function ProfessorWalkingControl(controlDiv, map) {
   controlText.innerHTML = 'Walking';
   controlUI.appendChild(controlText);
 
-  // var professorTransitButton = document.getElementById("professorTransit");
-  //
-  // if (professorTransitButton == null){
-  // 	  alert("null!");
-  // }
-    //
-  // professorTransitButton.style.backgroundColor = 'white';
+
   controlUI.addEventListener('click', function() {
-	  
+
 	  var event = new CustomEvent("clicked", { "detail": "walking" });
 	  document.dispatchEvent(event);
-	  
-	  
+
+
 	  controlUI.style.backgroundColor = 'yellow';
 	  travelMode=google.maps.TravelMode.WALKING;
 	  var service = new google.maps.DistanceMatrixService;
@@ -137,11 +212,11 @@ function ProfessorWalkingControl(controlDiv, map) {
 	      } else {
 	          var result = response.rows[0].elements;
 			  var contentString = result[0].duration.text;
-			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.setContent(contentString+" to the meeting");
 			  professorInfowindow.open(map, professorMarker);
 	      }
 	    });
-		
+
 	  professorInfowindow.open(map, professorMarker);
   });
 }
@@ -176,9 +251,8 @@ function ProfessorCyclingControl(controlDiv, map) {
   controlUI.addEventListener('click', function() {
 	  var event = new CustomEvent("clicked", { "detail": "cycling" });
 	  document.dispatchEvent(event);
-	  
+
 	  controlUI.style.backgroundColor = 'yellow';
-	  professorTransitControl.controlUI.style.backgroundColor = 'white';
 	  travelMode=google.maps.TravelMode.BICYCLING;
 	  var service = new google.maps.DistanceMatrixService;
 	    service.getDistanceMatrix({
@@ -194,11 +268,11 @@ function ProfessorCyclingControl(controlDiv, map) {
 	      } else {
 	          var result = response.rows[0].elements;
 			  var contentString = result[0].duration.text;
-			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.setContent(contentString+" to the meeting");
 			  professorInfowindow.open(map, professorMarker);
 	      }
 	    });
-		
+
 	  professorInfowindow.open(map, professorMarker);
   });
 }
@@ -232,7 +306,7 @@ function ProfessorTransitControl(controlDiv, map) {
   controlUI.addEventListener('click', function() {
 	  var event = new CustomEvent("clicked", { "detail": "transit" });
 	  document.dispatchEvent(event);
-	  
+
 	  controlUI.style.backgroundColor = 'yellow';
 	  travelMode = google.maps.TravelMode.TRANSIT;
 	  var service = new google.maps.DistanceMatrixService;
@@ -249,11 +323,11 @@ function ProfessorTransitControl(controlDiv, map) {
 	      } else {
 	          var result = response.rows[0].elements;
 			  var contentString = result[0].duration.text;
-			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.setContent(contentString+" to the meeting");
 			  professorInfowindow.open(map, professorMarker);
 	      }
 	    });
-		
+
 	  professorInfowindow.open(map, professorMarker);
   });
 }
@@ -373,7 +447,7 @@ function MeTransitControl(controlDiv, map) {
 
 
 function initMap() {
-	
+
   var myOptions = {
     	center: centerLocation,
     	zoom: 17,
@@ -385,13 +459,21 @@ function initMap() {
 	    scaleControl: true,
 	    zoomControl: true,
 	    zoomControlOptions: {
-	      style: google.maps.ZoomControlStyle.LARGE 
+	      style: google.maps.ZoomControlStyle.LARGE
 	    },
 	    mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
-  map = new google.maps.Map(document.getElementById("map"), myOptions); 
-  
+  map = new google.maps.Map(document.getElementById("map"), myOptions);
+
   professorInfowindow = new google.maps.InfoWindow({
+      content: ""
+  });
+  
+  cafeInfowindow = new google.maps.InfoWindow({
+      content: ""
+  });
+  
+  meetingInfowindow = new google.maps.InfoWindow({
       content: ""
   });
   
@@ -400,23 +482,56 @@ function initMap() {
       map: map,
       icon: 'meeting.png'
   });
+
+
+  meetingMarker.addListener('click',function(event) {
+	loadCalendarApi();
+  meetingInfowindow.setContent(whenMeeting + " mins before meeting starts");
+  meetingInfowindow.open(map, meetingMarker);
+  });
+  
   
   var cafeMarker = new google.maps.Marker({
       position: cafeLocation,
       map: map,
       icon: 'cafe.png'
   });
+  
+  cafeMarker.addListener('click',function(event) {
+	  
+	  var service = new google.maps.DistanceMatrixService;
+	    service.getDistanceMatrix({
+	      origins: [cafeLocation],
+	      destinations: [meetingLocation],
+	      travelMode: google.maps.TravelMode.WALKING,
+	      unitSystem: google.maps.UnitSystem.METRIC,
+	      avoidHighways: false,
+	      avoidTolls: false
+	    }, function(response, status) {
+	      if (status !== google.maps.DistanceMatrixStatus.OK) {
+	        alert('Error was: ' + status);
+	      } else {
+	          var result = response.rows[0].elements;
+			  var contentString = result[0].duration.text;
+			  cafeInfowindow.setContent(contentString+" to the cafe");
+			  cafeInfowindow.open(map, cafeMarker);
+	      }
+	    });
+		
+  });
+  
+  
   professorMarker = new google.maps.Marker({
       position: professorLocation,
       map: map,
 	  draggable:true,
       icon: 'professor.png'
   });
- 
+
   professorMarker.addListener('dragend',function(event) {
-	  
+
       newProfessorLocation = {lat: event.latLng.lat(), lng:event.latLng.lng()};
-	  
+
 	  var service = new google.maps.DistanceMatrixService;
 	    service.getDistanceMatrix({
 	      origins: [newProfessorLocation],
@@ -431,42 +546,42 @@ function initMap() {
 	      } else {
 	          var result = response.rows[0].elements;
 			  var contentString = result[0].duration.text;
-			  professorInfowindow.setContent(contentString);
+			  professorInfowindow.setContent(contentString+" to the meeting");
 			  professorInfowindow.open(map, professorMarker);
 	      }
 	    });
   });
-  
-	
-	
+
+
+
   var professorDrivingControlDiv = document.createElement('div');
   professorDrivingControl = new ProfessorDrivingControl(professorDrivingControlDiv, map);
 
   professorDrivingControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorDrivingControlDiv);
-  
+
   var professorWalkingControlDiv = document.createElement('div');
   professorWalkingControl = new ProfessorWalkingControl(professorWalkingControlDiv, map);
-  
+
   professorWalkingControlDiv.index = 2;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorWalkingControlDiv);
-  
+
   var professorCyclingControlDiv = document.createElement('div');
   professorCyclingControl = new ProfessorCyclingControl(professorCyclingControlDiv, map);
 
   professorCyclingControlDiv.index = 3;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorCyclingControlDiv);
-  
+
   var professorTransitControlDiv = document.createElement('div');
   professorTransitControl = new ProfessorTransitControl(professorTransitControlDiv, map);
 
   professorTransitControlDiv.index = 4;
   map.controls[google.maps.ControlPosition.LEFT_CENTER].push(professorTransitControlDiv);
-  
 
-  
 
- 
+
+
+
 
   document.addEventListener("clicked", function(e) {
 	  if (e.detail == "transit"){
@@ -490,33 +605,33 @@ function initMap() {
 		professorDrivingControlDiv.getElementsByTagName("div")[0].style.backgroundColor='white';
 	  }
   });
-  
+
     //me
-  
+
   var meDrivingControlDiv = document.createElement('div');
   var meDrivingControl = new MeDrivingControl(meDrivingControlDiv, map);
 
   meDrivingControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meDrivingControlDiv);
-  
+
   var meWalkingControlDiv = document.createElement('div');
   var meWalkingControl = new MeWalkingControl(meWalkingControlDiv, map);
 
   meWalkingControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meWalkingControlDiv);
-  
+
   var meCyclingControlDiv = document.createElement('div');
   var meCyclingControl = new MeCyclingControl(meCyclingControlDiv, map);
 
   meCyclingControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meCyclingControlDiv);
-  
+
   var meTransitControlDiv = document.createElement('div');
   var meTransitControl = new MeTransitControl(meTransitControlDiv, map);
 
   meTransitControlDiv.index = 1;
   map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(meTransitControlDiv);
-  
+
 }
 
     </script>
